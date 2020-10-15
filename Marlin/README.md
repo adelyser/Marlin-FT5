@@ -156,7 +156,16 @@ Then in the code, make the following changes:
     #define X_HOME_DIR 1
     #define Y_HOME_DIR 1
 
+**Change hotend fan to automatically turn on and off**
+This shuts the hotend fan off when the hotend temp drops below 50C. It reduces power consumption and noise when a print is complete.
+
+In *Configuration_adv.h*:
+
+    #define E0_AUTO_FAN_PIN 7
+    On the MKS board, move the ground for the hotend fan to the "-" terminal of the E1 connector.
+
 **Change to Estimated Time Remaining on LCD:**
+This will show the Estimated Time Remaining on the LCD when the M73 command is inserted into the gcode. Most Slicers will do this for you at the time of slice.
 
 In file *Configuration_adv.h*:
 
@@ -191,4 +200,5 @@ In file *Configuration_adv.h*:
     +        lcd_put_wchar('R');
     +      }
          #endif
+
 
