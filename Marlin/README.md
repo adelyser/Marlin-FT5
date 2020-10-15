@@ -80,10 +80,10 @@ Allow saving parameters to the EEPROM. This allows you to use custom set paramet
 
     #define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 
-
 **Nice-to-have Options**
 
 In file *Configuration.h*:
+
 Set your personal name in the firmware.
 
     #define STRING_CONFIG_H_AUTHOR "(Your Name here, Folgertech FT-5)"
@@ -92,9 +92,11 @@ Enable PID auto-tuning. This allows the firmware to determine the best settings 
 
     #define PID_AUTOTUNE_MENU
 
-#define S_CURVE_ACCELERATION
+Produces smoother direction changes
 
-This adds the bed leveling option into the LCD menu for manually leveling the bed.
+    #define S_CURVE_ACCELERATION
+
+Adds the bed leveling option into the LCD menu for manually leveling the bed.
 
     #define MESH_BED_LEVELING
     
@@ -120,23 +122,25 @@ I prefer the Prusa style of screen
 
     #define LCD_INFO_SCREEN_STYLE 1
 
-This allows you to home a single axis at a time.
+Ability to home a single axis at a time.
 
     #define INDIVIDUAL_AXIS_HOMING_MENU
 
 In file *Configuration_adv.h*:
 
-#define ADAPTIVE_STEP_SMOOTHING
+Improves the resolution of multi-axis moves
 
-#define STATUS_MESSAGE_SCROLLING
+    #define ADAPTIVE_STEP_SMOOTHING
 
-This times out the LCD menu and returns you to the main screen after the timeout. Certain menus will not timeout, such as the Bed Leveling menu.
+Times out the LCD menu and returns you to the main screen after the timeout. Certain menus will not timeout, such as the Bed Leveling menu.
 
     #define LCD_TIMEOUT_TO_STATUS 15000
 
-#define LONG_FILENAME_HOST_SUPPORT
+Enables long filenames and scroll messages
 
-#define SCROLL_LONG_FILENAMES
+    #define STATUS_MESSAGE_SCROLLING
+    #define LONG_FILENAME_HOST_SUPPORT
+    #define SCROLL_LONG_FILENAMES
 
 **Change home from Back Right to Front Left:**
 I found it frustrating that all my prints would come out backwards compared to other Cartesian printers I've used. I decided to fix this to make it similar.
@@ -163,3 +167,27 @@ In file *Configuration_adv.h*:
         #define USE_M73_REMAINING_TIME  // Use remaining time from M73 command instead of estimation
         //#define ROTATE_PROGRESS_DISPLAY // Display (P)rogress, (E)lapsed, and (R)emaining time
       #endif
+ 
+ In *src/lcd/HD44780/ultralcd_HD44780.cpp*:
+ 
+         #if HAS_PRINT_PROGRESS && !defined(DREW_PRINT_PROGRESS)
+           _draw_print_progress();
+         #else
+    -      duration_t elapsed = print_job_timer.duration();
+    +      uint32_t timeval = 0;
+    +      #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
+    +       timeval = get_remaining_time();
+    +      #endif
+    +
+    +      duration_t elapsed = timeval ? timeval : print_job_timer.duration();
+           char buffer[14];
+           (void)elapsed.toDigital(buffer);
+           lcd_put_wchar(LCD_STR_CLOCK[0]);
+           lcd_put_u8str(buffer);
+    +      if(timeval)
+    +      {
+    +        // Append R for remaining time
+    +        lcd_put_wchar('R');
+    +      }
+         #endif
+
