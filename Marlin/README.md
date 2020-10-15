@@ -157,6 +157,7 @@ Then in the code, make the following changes:
     #define Y_HOME_DIR 1
 
 **Change to Estimated Time Remaining on LCD:**
+
 In file *Configuration_adv.h*:
 
     #define LCD_SET_PROGRESS_MANUALLY
