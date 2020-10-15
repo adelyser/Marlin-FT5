@@ -125,6 +125,7 @@ This allows you to home a single axis at a time.
     #define INDIVIDUAL_AXIS_HOMING_MENU
 
 In file *Configuration_adv.h*:
+
 #define ADAPTIVE_STEP_SMOOTHING
 
 #define STATUS_MESSAGE_SCROLLING
