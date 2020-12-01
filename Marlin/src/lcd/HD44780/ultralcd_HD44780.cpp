@@ -967,7 +967,7 @@ void MarlinUI::draw_status_screen() {
     #else
       uint32_t timeval = 0;
       #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
-       timeval = get_remaining_time();
+        timeval = get_remaining_time();
       #endif
  
       duration_t elapsed = timeval ? timeval : print_job_timer.duration();
@@ -975,11 +975,12 @@ void MarlinUI::draw_status_screen() {
       (void)elapsed.toDigital(buffer);
       lcd_put_wchar(LCD_STR_CLOCK[0]);
       lcd_put_u8str(buffer);
-      if(timeval)
-      {
-        // Append R for remaining time
-        lcd_put_wchar('R');
-      }
+      #if LCD_INFO_SCREEN_STYLE == 1
+        if(timeval) {
+          // Append R for remaining time
+          lcd_put_wchar('R');
+        }
+      #endif
     #endif
 
   #endif // LCD_INFO_SCREEN_STYLE 1

@@ -35,13 +35,20 @@
  *   M73 P25 ; Set progress to 25%
  */
 void GcodeSuite::M73() {
-  if (parser.seen('P'))
+  int progress = 0;
+
+  if (parser.seen('P')) {
     ui.set_progress((PROGRESS_SCALE) > 1
       ? parser.value_float() * (PROGRESS_SCALE)
       : parser.value_byte()
     );
+    progress = parser.value_int();
+  }
   #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
-    if (parser.seen('R')) ui.set_remaining_time(60 * parser.value_ulong());
+    if (parser.seen('R')) {
+      ui.set_remaining_time(60 * parser.value_ulong());
+      SERIAL_ECHOLNPAIR("NORMAL MODE: Percent done: ", progress, "; print time remaining in mins: ", parser.value_ulong());
+    }
   #endif
 }
 
