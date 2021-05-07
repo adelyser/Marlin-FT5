@@ -79,7 +79,8 @@
 // Limit Switches
 //
 #define X_STOP_PIN                          PA3
-#define Y_STOP_PIN                          PA7
+//#define Y_STOP_PIN                          PA7
+#define Y_STOP_PIN                          PA15
 #define Z_STOP_PIN                          PA5
 
 
